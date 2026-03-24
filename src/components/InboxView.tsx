@@ -10,9 +10,10 @@ interface Props {
   onFile: (task: Task) => void;
   onDelete: (id: string) => void;
   onAdd: (title: string) => void;
+  dark: boolean;
 }
 
-export default function InboxView({ tasks, onUpdate, onFile, onDelete, onAdd }: Props) {
+export default function InboxView({ tasks, onUpdate, onFile, onDelete, onAdd, dark }: Props) {
   const [input, setInput] = useState('');
 
   const inboxTasks = tasks.filter(t => !t.filed);
@@ -27,8 +28,8 @@ export default function InboxView({ tasks, onUpdate, onFile, onDelete, onAdd }: 
   return (
     <div className="p-6 max-w-2xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">Task Inbox</h1>
-        <p className="text-white/40 text-sm mt-1">Capture first, organise later</p>
+        <h1 className={`text-2xl font-bold ${dark ? 'text-white' : 'text-gray-800'}`}>Task Inbox</h1>
+        <p className={`text-sm mt-1 ${dark ? 'text-white/40' : 'text-gray-400'}`}>Capture first, organise later</p>
       </div>
 
       {/* Capture input */}
@@ -38,7 +39,7 @@ export default function InboxView({ tasks, onUpdate, onFile, onDelete, onAdd }: 
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleAdd()}
           placeholder="Add a task..."
-          className="flex-1 bg-[#1e1e1e] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          className={`flex-1 border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent ${dark ? 'bg-[#1e1e1e] border-white/10 text-white placeholder-white/30' : 'bg-white border-gray-200 text-gray-800 placeholder-gray-400'}`}
           autoFocus
         />
         <button
@@ -59,15 +60,15 @@ export default function InboxView({ tasks, onUpdate, onFile, onDelete, onAdd }: 
             </span>
           </div>
           {inboxTasks.map(task => (
-            <TaskCard key={task.id} task={task} onUpdate={onUpdate} onFile={onFile} onDelete={onDelete} />
+            <TaskCard key={task.id} task={task} onUpdate={onUpdate} onFile={onFile} onDelete={onDelete} dark={dark} />
           ))}
         </div>
       )}
 
       {inboxTasks.length === 0 && (
-        <div className="text-center py-16 text-white/20">
+        <div className={`text-center py-16 ${dark ? 'text-white/20' : 'text-gray-300'}`}>
           <div className="text-5xl mb-3">📥</div>
-          <p className="text-lg font-medium text-white/40">Inbox is clear</p>
+          <p className={`text-lg font-medium ${dark ? 'text-white/40' : 'text-gray-400'}`}>Inbox is clear</p>
           <p className="text-sm">Add a task above to get started</p>
         </div>
       )}
@@ -83,17 +84,17 @@ export default function InboxView({ tasks, onUpdate, onFile, onDelete, onAdd }: 
           </div>
           <div className="space-y-2">
             {filedTasks.map(task => (
-              <div key={task.id} className="bg-[#1a1a1a] border border-white/5 rounded-xl px-4 py-3 flex items-center justify-between">
+              <div key={task.id} className={`border rounded-xl px-4 py-3 flex items-center justify-between ${dark ? 'bg-[#1a1a1a] border-white/5' : 'bg-white border-gray-100'}`}>
                 <div className="flex items-center gap-3">
                   <span className="text-green-400 text-sm">✓</span>
-                  <span className="text-white/60 text-sm">{task.title}</span>
+                  <span className={`text-sm ${dark ? 'text-white/60' : 'text-gray-600'}`}>{task.title}</span>
                   {task.delegate && (
                     <span className="bg-blue-500/20 text-blue-400 text-xs px-2 py-0.5 rounded-full">{task.delegate}</span>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  {task.category && <span className="text-xs text-white/30">{task.category}</span>}
-                  <button onClick={() => onDelete(task.id)} className="text-white/20 hover:text-red-400 text-lg leading-none ml-2">×</button>
+                  {task.category && <span className={`text-xs ${dark ? 'text-white/30' : 'text-gray-400'}`}>{task.category}</span>}
+                  <button onClick={() => onDelete(task.id)} className={`text-lg leading-none ml-2 hover:text-red-400 ${dark ? 'text-white/20' : 'text-gray-300'}`}>×</button>
                 </div>
               </div>
             ))}

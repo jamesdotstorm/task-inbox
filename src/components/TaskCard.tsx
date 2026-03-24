@@ -8,11 +8,12 @@ interface Props {
   onUpdate: (task: Task) => void;
   onFile: (task: Task) => void;
   onDelete: (id: string) => void;
+  dark: boolean;
 }
 
 const stars = [1, 2, 3, 4, 5] as Importance[];
 
-export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
+export default function TaskCard({ task, onUpdate, onFile, onDelete, dark }: Props) {
   const [expanded, setExpanded] = useState(true);
   const [newSubtask, setNewSubtask] = useState('');
 
@@ -27,27 +28,27 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
   const canFile = task.timing && task.taskType && task.importance && task.category && task.delegate;
 
   return (
-    <div className="bg-[#1a1a1a] border border-white/5 rounded-xl mb-3 overflow-hidden">
+    <div className={`border rounded-xl mb-3 overflow-hidden ${dark ? 'bg-[#1a1a1a] border-white/5' : 'bg-white border-gray-100 shadow-sm'}`}>
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3">
-        <button onClick={() => setExpanded(!expanded)} className="text-white/30 hover:text-white/60 text-sm">
+        <button onClick={() => setExpanded(!expanded)} className={`text-sm ${dark ? 'text-white/30 hover:text-white/60' : 'text-gray-400 hover:text-gray-600'}`}>
           {expanded ? '▼' : '▶'}
         </button>
-        <span className="flex-1 font-medium text-white">{task.title}</span>
+        <span className={`flex-1 font-medium ${dark ? 'text-white' : 'text-gray-800'}`}>{task.title}</span>
         {task.importance && <span className="text-yellow-400 text-sm">{'⭐'.repeat(task.importance)}</span>}
         {task.delegate && (
           <span className="bg-blue-500/20 text-blue-400 text-xs px-2 py-0.5 rounded-full">{task.delegate}</span>
         )}
-        <button onClick={() => onDelete(task.id)} className="text-white/20 hover:text-red-400 text-lg leading-none ml-1">×</button>
+        <button onClick={() => onDelete(task.id)} className={`text-lg leading-none ml-1 hover:text-red-400 ${dark ? 'text-white/20' : 'text-gray-300'}`}>×</button>
       </div>
 
       {/* Attributes */}
       {expanded && (
-        <div className="px-4 pb-4 space-y-3 border-t border-white/5 pt-3">
+        <div className={`px-4 pb-4 space-y-3 border-t pt-3 ${dark ? 'border-white/5' : 'border-gray-50'}`}>
           <div className="grid grid-cols-2 gap-3">
             {/* Timing */}
             <div>
-              <label className="text-xs text-white/40 mb-1 block">Timing</label>
+              <label className={`text-xs mb-1 block ${dark ? 'text-white/40' : 'text-gray-500'}`}>Timing</label>
               <div className="flex gap-2">
                 {(['do-now', 'schedule'] as Timing[]).map(t => (
                   <button
@@ -56,7 +57,7 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
                     className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
                       task.timing === t
                         ? 'bg-indigo-600 text-white border-indigo-600'
-                        : 'bg-transparent text-white/50 border-white/10 hover:border-indigo-400 hover:text-white'
+                        : dark ? 'bg-transparent text-white/50 border-white/10 hover:border-indigo-400 hover:text-white' : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300'
                     }`}
                   >
                     {t === 'do-now' ? 'Do Now' : 'Schedule'}
@@ -68,14 +69,14 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
                   type="date"
                   value={task.scheduledDate || ''}
                   onChange={e => update({ scheduledDate: e.target.value })}
-                  className="mt-2 w-full text-xs bg-[#222] border border-white/10 text-white rounded-lg px-2 py-1.5"
+                  className={`mt-2 w-full text-xs border rounded-lg px-2 py-1.5 ${dark ? 'bg-[#222] border-white/10 text-white' : 'bg-white border-gray-200 text-gray-800'}`}
                 />
               )}
             </div>
 
             {/* Task Type */}
             <div>
-              <label className="text-xs text-white/40 mb-1 block">Type</label>
+              <label className={`text-xs mb-1 block ${dark ? 'text-white/40' : 'text-gray-500'}`}>Type</label>
               <div className="flex gap-2">
                 {(['quick', 'project'] as TaskType[]).map(t => (
                   <button
@@ -84,7 +85,7 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
                     className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
                       task.taskType === t
                         ? 'bg-indigo-600 text-white border-indigo-600'
-                        : 'bg-transparent text-white/50 border-white/10 hover:border-indigo-400 hover:text-white'
+                        : dark ? 'bg-transparent text-white/50 border-white/10 hover:border-indigo-400 hover:text-white' : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300'
                     }`}
                   >
                     {t === 'quick' ? 'Quick' : 'Project'}
@@ -95,14 +96,14 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
 
             {/* Importance */}
             <div>
-              <label className="text-xs text-white/40 mb-1 block">Importance</label>
+              <label className={`text-xs mb-1 block ${dark ? 'text-white/40' : 'text-gray-500'}`}>Importance</label>
               <div className="flex gap-1">
                 {stars.map(s => (
                   <button
                     key={s}
                     onClick={() => update({ importance: s })}
                     className={`text-xl transition-all ${
-                      task.importance && s <= task.importance ? 'text-yellow-400' : 'text-white/10 hover:text-yellow-300'
+                      task.importance && s <= task.importance ? 'text-yellow-400' : dark ? 'text-white/10 hover:text-yellow-300' : 'text-gray-200 hover:text-yellow-300'
                     }`}
                   >
                     ★
@@ -113,11 +114,11 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
 
             {/* Category */}
             <div>
-              <label className="text-xs text-white/40 mb-1 block">Category</label>
+              <label className={`text-xs mb-1 block ${dark ? 'text-white/40' : 'text-gray-500'}`}>Category</label>
               <select
                 value={task.category || ''}
                 onChange={e => update({ category: e.target.value as Category || null })}
-                className="w-full text-xs bg-[#222] border border-white/10 text-white rounded-lg px-2 py-1.5"
+                className={`w-full text-xs border rounded-lg px-2 py-1.5 ${dark ? 'bg-[#222] border-white/10 text-white' : 'bg-white border-gray-200 text-gray-800'}`}
               >
                 <option value="">Select...</option>
                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
@@ -126,11 +127,11 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
 
             {/* Delegation */}
             <div>
-              <label className="text-xs text-white/40 mb-1 block">Assign to</label>
+              <label className={`text-xs mb-1 block ${dark ? 'text-white/40' : 'text-gray-500'}`}>Assign to</label>
               <select
                 value={task.delegate || ''}
                 onChange={e => update({ delegate: e.target.value || null })}
-                className="w-full text-xs bg-[#222] border border-white/10 text-white rounded-lg px-2 py-1.5"
+                className={`w-full text-xs border rounded-lg px-2 py-1.5 ${dark ? 'bg-[#222] border-white/10 text-white' : 'bg-white border-gray-200 text-gray-800'}`}
               >
                 <option value="">Select...</option>
                 {DELEGATES.map(d => <option key={d} value={d}>{d}</option>)}
@@ -141,7 +142,7 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
           {/* Subtasks */}
           {task.taskType === 'project' && (
             <div>
-              <label className="text-xs text-white/40 mb-1 block">Subtasks</label>
+              <label className={`text-xs mb-1 block ${dark ? 'text-white/40' : 'text-gray-500'}`}>Subtasks</label>
               {task.subtasks.map(st => (
                 <div key={st.id} className="flex items-center gap-2 mb-1">
                   <input
@@ -150,7 +151,7 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
                     onChange={e => update({ subtasks: task.subtasks.map(s => s.id === st.id ? { ...s, done: e.target.checked } : s) })}
                     className="rounded accent-indigo-500"
                   />
-                  <span className={`text-xs ${st.done ? 'line-through text-white/20' : 'text-white/70'}`}>{st.title}</span>
+                  <span className={`text-xs ${st.done ? `line-through ${dark ? 'text-white/20' : 'text-gray-300'}` : dark ? 'text-white/70' : 'text-gray-700'}`}>{st.title}</span>
                 </div>
               ))}
               <div className="flex gap-2 mt-1">
@@ -159,9 +160,9 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete }: Props) {
                   onChange={e => setNewSubtask(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addSubtask()}
                   placeholder="Add subtask..."
-                  className="flex-1 text-xs bg-[#222] border border-white/10 text-white placeholder-white/30 rounded-lg px-2 py-1.5"
+                  className={`flex-1 text-xs border rounded-lg px-2 py-1.5 ${dark ? 'bg-[#222] border-white/10 text-white placeholder-white/30' : 'bg-white border-gray-200 text-gray-800 placeholder-gray-400'}`}
                 />
-                <button onClick={addSubtask} className="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg">+</button>
+                <button onClick={addSubtask} className={`text-xs px-3 py-1.5 rounded-lg ${dark ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}>+</button>
               </div>
             </div>
           )}

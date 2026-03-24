@@ -11,12 +11,22 @@ type View = 'inbox' | 'kanban';
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [view, setView] = useState<View>('inbox');
+  const [dark, setDark] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setTasks(loadTasks());
+    const saved = localStorage.getItem('dark-mode');
+    if (saved !== null) setDark(saved === 'true');
     setMounted(true);
   }, []);
+
+  const toggleDark = () => {
+    setDark(d => {
+      localStorage.setItem('dark-mode', String(!d));
+      return !d;
+    });
+  };
 
   const updateTasks = (updated: Task[]) => {
     setTasks(updated);
@@ -61,16 +71,21 @@ export default function Home() {
   if (!mounted) return null;
 
   return (
-    <div className="flex h-screen bg-[#0f0f0f] font-sans">
+    <div className={`flex h-screen font-sans ${dark ? 'bg-[#0f0f0f]' : 'bg-gray-50'}`}>
       {/* Sidebar */}
-      <div className="w-56 bg-[#161616] border-r border-white/5 flex flex-col">
-        <div className="px-5 py-6 border-b border-white/5">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">🐢</span>
-            <div>
-              <p className="font-bold text-sm text-white">Task Inbox</p>
-              <p className="text-white/40 text-xs">Jamie & Torti</p>
+      <div className={`w-56 border-r flex flex-col ${dark ? 'bg-[#161616] border-white/5' : 'bg-white border-gray-200'}`}>
+        <div className={`px-5 py-6 border-b ${dark ? 'border-white/5' : 'border-gray-200'}`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🐢</span>
+              <div>
+                <p className={`font-bold text-sm ${dark ? 'text-white' : 'text-gray-800'}`}>Task Inbox</p>
+                <p className={`text-xs ${dark ? 'text-white/40' : 'text-gray-400'}`}>Jamie & Torti</p>
+              </div>
             </div>
+            <button onClick={toggleDark} className={`text-lg transition-opacity opacity-60 hover:opacity-100`} title="Toggle dark mode">
+              {dark ? '☀️' : '🌙'}
+            </button>
           </div>
         </div>
 
@@ -80,7 +95,7 @@ export default function Home() {
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               view === 'inbox'
                 ? 'bg-indigo-600 text-white'
-                : 'text-white/50 hover:bg-white/5 hover:text-white'
+                : dark ? 'text-white/50 hover:bg-white/5 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -99,7 +114,7 @@ export default function Home() {
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               view === 'kanban'
                 ? 'bg-indigo-600 text-white'
-                : 'text-white/50 hover:bg-white/5 hover:text-white'
+                : dark ? 'text-white/50 hover:bg-white/5 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -119,13 +134,13 @@ export default function Home() {
           </button>
         </nav>
 
-        <div className="px-5 py-4 border-t border-white/5">
-          <p className="text-white/20 text-xs">Powered by Torti 🐢</p>
+        <div className={`px-5 py-4 border-t ${dark ? 'border-white/5' : 'border-gray-200'}`}>
+          <p className={`text-xs ${dark ? 'text-white/20' : 'text-gray-300'}`}>Powered by Torti 🐢</p>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="flex-1 overflow-auto bg-[#0f0f0f]">
+      <div className={`flex-1 overflow-auto ${dark ? 'bg-[#0f0f0f]' : 'bg-gray-50'}`}>
         {view === 'inbox' ? (
           <InboxView
             tasks={tasks}
@@ -133,9 +148,10 @@ export default function Home() {
             onFile={fileTask}
             onDelete={deleteTask}
             onAdd={addTask}
+            dark={dark}
           />
         ) : (
-          <KanbanBoard tasks={tasks} onUpdate={updateTask} />
+          <KanbanBoard tasks={tasks} onUpdate={updateTask} dark={dark} />
         )}
       </div>
     </div>
