@@ -26,7 +26,7 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete, dark, onOpe
     setNewSubtask('');
   };
 
-  const canFile = task.timing && task.taskType && task.importance && task.category && task.delegate;
+  const canFile = !!task.timing;
 
   return (
     <div className={`border rounded-xl mb-3 overflow-hidden ${dark ? 'bg-[#1a1a1a] border-white/5' : 'bg-white border-gray-100 shadow-sm'}`}>
@@ -36,7 +36,7 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete, dark, onOpe
           {expanded ? '▼' : '▶'}
         </button>
         <button
-          onClick={() => update({ done: !task.done, kanbanStatus: !task.done ? 'finished' : 'not-started' })}
+          onClick={() => update({ done: !task.done, filed: !task.done ? true : task.filed, kanbanStatus: !task.done ? 'finished' : 'not-started' })}
           title={task.done ? 'Mark incomplete' : 'Mark done'}
           className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
             task.done
@@ -47,6 +47,7 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete, dark, onOpe
           {task.done && <span className="text-xs leading-none">✓</span>}
         </button>
         <button onClick={() => onOpen(task)} className={`flex-1 text-left font-medium hover:underline decoration-dotted ${task.done ? 'line-through opacity-40' : ''} ${dark ? 'text-white' : 'text-gray-800'}`}>{task.title}</button>
+        {task.notes && <span title={task.notes} className={`text-xs ${dark ? 'text-white/25' : 'text-gray-400'}`}>📝</span>}
         {task.importance && <span className="text-yellow-400 text-sm">{'⭐'.repeat(task.importance)}</span>}
         {task.delegate && (
           <span className="bg-blue-500/20 text-blue-400 text-xs px-2 py-0.5 rounded-full">{task.delegate}</span>
@@ -151,6 +152,18 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete, dark, onOpe
             </div>
           </div>
 
+          {/* Notes */}
+          <div>
+            <label className={`text-xs mb-1 block ${dark ? 'text-white/40' : 'text-gray-500'}`}>Notes</label>
+            <textarea
+              value={task.notes || ''}
+              onChange={e => update({ notes: e.target.value })}
+              placeholder="Add notes..."
+              rows={2}
+              className={`w-full text-xs border rounded-lg px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-indigo-500 ${dark ? 'bg-[#222] border-white/10 text-white placeholder-white/20' : 'bg-white border-gray-200 text-gray-800 placeholder-gray-400'}`}
+            />
+          </div>
+
           {/* Subtasks */}
           {task.taskType === 'project' && (
             <div>
@@ -182,7 +195,7 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete, dark, onOpe
           {/* File button */}
           <div className="flex justify-end pt-1">
             <button
-              onClick={() => canFile && onFile(task)}
+              onClick={() => canFile && onFile({ ...task, delegate: task.delegate || 'Jamie' })}
               disabled={!canFile}
               className={`text-sm px-4 py-2 rounded-lg font-medium transition-all ${
                 canFile

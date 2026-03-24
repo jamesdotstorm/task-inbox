@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Task Inbox — Jamie & Torti",
-  description: "A central control panel for Jamie and Torti to collaborate",
+  title: "Mission Control — Jamie & Torti",
+  description: "Harnessing time to exponentially amplify Jamie's productivity — accelerating toward the singularity.",
 };
 
 export default function RootLayout({

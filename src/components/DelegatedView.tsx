@@ -6,9 +6,10 @@ interface Props {
   tasks: Task[];
   dark: boolean;
   onOpen: (task: Task) => void;
+  onUpdate: (task: Task) => void;
 }
 
-export default function DelegatedView({ tasks, dark, onOpen }: Props) {
+export default function DelegatedView({ tasks, dark, onOpen, onUpdate }: Props) {
   const delegated = tasks.filter(t => t.filed && t.delegate);
 
   const grouped = delegated.reduce<Record<string, Task[]>>((acc, t) => {
@@ -50,21 +51,20 @@ export default function DelegatedView({ tasks, dark, onOpen }: Props) {
               <div className="space-y-2">
                 {personTasks.map(task => (
                   <div key={task.id} onClick={() => onOpen(task)} className={`border rounded-xl px-4 py-3 cursor-pointer hover:border-indigo-500/40 transition-colors ${dark ? 'bg-[#1a1a1a] border-white/5' : 'bg-white border-gray-100 shadow-sm'}`}>
-                    <div className="flex items-center justify-between">
-                      <div>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={e => { e.stopPropagation(); onUpdate({ ...task, done: !task.done, filed: true, kanbanStatus: !task.done ? 'finished' : 'not-started' }); }}
+                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${task.done ? 'bg-green-500 border-green-500 text-white' : dark ? 'border-white/20 hover:border-green-400' : 'border-gray-300 hover:border-green-400'}`}
+                      >
+                        {task.done && <span className="text-xs leading-none">✓</span>}
+                      </button>
+                      <div className="flex-1">
                         <p className={`text-sm font-medium ${task.done ? 'line-through opacity-40' : ''} ${dark ? 'text-white' : 'text-gray-800'}`}>{task.title}</p>
-                        {task.scheduledDate && (
-                          <p className={`text-xs mt-0.5 ${dark ? 'text-white/30' : 'text-gray-400'}`}>📅 {task.scheduledDate}</p>
-                        )}
+                        {task.scheduledDate && <p className={`text-xs mt-0.5 ${dark ? 'text-white/30' : 'text-gray-400'}`}>📅 {task.scheduledDate}</p>}
                       </div>
                       <div className="flex items-center gap-2">
                         {task.category && <span className={`text-xs px-2 py-0.5 rounded-full ${dark ? 'bg-white/5 text-white/40' : 'bg-gray-100 text-gray-500'}`}>{task.category}</span>}
                         {task.importance && <span className="text-yellow-400/70 text-xs">{'★'.repeat(task.importance)}</span>}
-                        {task.taskType === 'project' && (
-                          <span className={`text-xs ${dark ? 'text-white/30' : 'text-gray-400'}`}>
-                            {task.subtasks.filter(s => s.done).length}/{task.subtasks.length}
-                          </span>
-                        )}
                       </div>
                     </div>
                   </div>

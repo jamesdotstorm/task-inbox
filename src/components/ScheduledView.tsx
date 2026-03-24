@@ -6,9 +6,10 @@ interface Props {
   tasks: Task[];
   dark: boolean;
   onOpen: (task: Task) => void;
+  onUpdate: (task: Task) => void;
 }
 
-export default function ScheduledView({ tasks, dark, onOpen }: Props) {
+export default function ScheduledView({ tasks, dark, onOpen, onUpdate }: Props) {
   const scheduled = tasks
     .filter(t => t.filed && t.timing === 'schedule' && t.scheduledDate)
     .sort((a, b) => (a.scheduledDate! > b.scheduledDate! ? 1 : -1));
@@ -54,7 +55,7 @@ export default function ScheduledView({ tasks, dark, onOpen }: Props) {
             </div>
             <div className="space-y-2">
               {dateTasks.map(task => (
-                <TaskRow key={task.id} task={task} dark={dark} onOpen={onOpen} />
+                <TaskRow key={task.id} task={task} dark={dark} onOpen={onOpen} onUpdate={onUpdate} />
               ))}
             </div>
           </div>
@@ -64,19 +65,24 @@ export default function ScheduledView({ tasks, dark, onOpen }: Props) {
   );
 }
 
-function TaskRow({ task, dark, onOpen }: { task: Task; dark: boolean; onOpen: (t: Task) => void }) {
+function TaskRow({ task, dark, onOpen, onUpdate }: { task: Task; dark: boolean; onOpen: (t: Task) => void; onUpdate: (t: Task) => void }) {
+  const markDone = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onUpdate({ ...task, done: !task.done, filed: true, kanbanStatus: !task.done ? 'finished' : 'not-started' });
+  };
   return (
-    <div className={`border rounded-xl px-4 py-3 flex items-center justify-between cursor-pointer hover:border-indigo-500/40 transition-colors ${dark ? 'bg-[#1a1a1a] border-white/5' : 'bg-white border-gray-100 shadow-sm'}`} onClick={() => onOpen(task)}>
-      <div className="flex items-center gap-3">
-        <span className="text-indigo-400 text-sm">📅</span>
-        <div>
-          <p className={`text-sm font-medium ${task.done ? 'line-through opacity-40' : ''} ${dark ? 'text-white' : 'text-gray-800'}`}>{task.title}</p>
-          {task.taskType === 'project' && task.subtasks.length > 0 && (
-            <p className={`text-xs mt-0.5 ${dark ? 'text-white/30' : 'text-gray-400'}`}>
-              {task.subtasks.filter(s => s.done).length}/{task.subtasks.length} subtasks
-            </p>
-          )}
-        </div>
+    <div className={`border rounded-xl px-4 py-3 flex items-center gap-3 cursor-pointer hover:border-indigo-500/40 transition-colors ${dark ? 'bg-[#1a1a1a] border-white/5' : 'bg-white border-gray-100 shadow-sm'}`} onClick={() => onOpen(task)}>
+      <button
+        onClick={markDone}
+        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${task.done ? 'bg-green-500 border-green-500 text-white' : dark ? 'border-white/20 hover:border-green-400' : 'border-gray-300 hover:border-green-400'}`}
+      >
+        {task.done && <span className="text-xs leading-none">✓</span>}
+      </button>
+      <div className="flex-1">
+        <p className={`text-sm font-medium ${task.done ? 'line-through opacity-40' : ''} ${dark ? 'text-white' : 'text-gray-800'}`}>{task.title}</p>
+        {task.taskType === 'project' && task.subtasks.length > 0 && (
+          <p className={`text-xs mt-0.5 ${dark ? 'text-white/30' : 'text-gray-400'}`}>{task.subtasks.filter(s => s.done).length}/{task.subtasks.length} subtasks</p>
+        )}
       </div>
       <div className="flex items-center gap-2">
         {task.category && <span className={`text-xs px-2 py-0.5 rounded-full ${dark ? 'bg-white/5 text-white/40' : 'bg-gray-100 text-gray-500'}`}>{task.category}</span>}

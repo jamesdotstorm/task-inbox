@@ -12,6 +12,7 @@ import TodayView from '@/components/TodayView';
 import AllTasksKanban from '@/components/AllTasksKanban';
 import TaskModal from '@/components/TaskModal';
 import DoneView from '@/components/DoneView';
+import DailyQuote from '@/components/DailyQuote';
 
 type View = 'inbox' | 'today' | 'scheduled' | 'delegated' | 'all' | 'kanban' | 'done';
 
@@ -108,7 +109,7 @@ export default function Home() {
             <div className="flex items-center gap-2">
               <span className="text-xl">🐢</span>
               <div>
-                <p className={`font-bold text-sm ${dark ? 'text-white' : 'text-gray-800'}`}>Task Inbox</p>
+                <p className={`font-bold text-sm ${dark ? 'text-white' : 'text-gray-800'}`}>Mission Control</p>
                 <p className={`text-xs ${dark ? 'text-white/40' : 'text-gray-400'}`}>Jamie & Torti</p>
               </div>
             </div>
@@ -117,6 +118,9 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+        {/* Daily Quote */}
+        <DailyQuote dark={dark} />
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
@@ -165,9 +169,9 @@ export default function Home() {
       {/* Main content */}
       <div className={`flex-1 overflow-auto ${dark ? 'bg-[#0f0f0f]' : 'bg-gray-50'}`}>
         {view === 'inbox' && <InboxView tasks={tasks} onUpdate={updateTask} onFile={fileTask} onDelete={deleteTask} onAdd={addTask} dark={dark} onOpen={setModalTask} />}
-        {view === 'today' && <TodayView tasks={tasks} dark={dark} onOpen={setModalTask} />}
-        {view === 'scheduled' && <ScheduledView tasks={tasks} dark={dark} onOpen={setModalTask} />}
-        {view === 'delegated' && <DelegatedView tasks={tasks} dark={dark} onOpen={setModalTask} />}
+        {view === 'today' && <TodayView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
+        {view === 'scheduled' && <ScheduledView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
+        {view === 'delegated' && <DelegatedView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
         {view === 'all' && <AllTasksKanban tasks={tasks} onUpdate={updateTask} dark={dark} onOpen={setModalTask} />}
         {view === 'kanban' && <KanbanBoard tasks={tasks} onUpdate={updateTask} dark={dark} onOpen={setModalTask} />}
         {view === 'done' && <DoneView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
