@@ -47,8 +47,7 @@ export default function Home() {
   };
 
   const fileTask = (task: Task) => {
-    const updated = { ...task, filed: true };
-    updateTasks(tasks.map(t => t.id === task.id ? updated : t));
+    updateTasks(tasks.map(t => t.id === task.id ? { ...task, filed: true } : t));
   };
 
   const deleteTask = (id: string) => {
@@ -62,15 +61,15 @@ export default function Home() {
   if (!mounted) return null;
 
   return (
-    <div className="flex h-screen bg-gray-50 font-sans">
+    <div className="flex h-screen bg-[#0f0f0f] font-sans">
       {/* Sidebar */}
-      <div className="w-56 bg-gray-900 text-white flex flex-col">
-        <div className="px-5 py-6 border-b border-gray-800">
+      <div className="w-56 bg-[#161616] border-r border-white/5 flex flex-col">
+        <div className="px-5 py-6 border-b border-white/5">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🐢</span>
             <div>
-              <p className="font-bold text-sm">Task Inbox</p>
-              <p className="text-gray-400 text-xs">Jamie & Torti</p>
+              <p className="font-bold text-sm text-white">Task Inbox</p>
+              <p className="text-white/40 text-xs">Jamie & Torti</p>
             </div>
           </div>
         </div>
@@ -81,7 +80,7 @@ export default function Home() {
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               view === 'inbox'
                 ? 'bg-indigo-600 text-white'
-                : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                : 'text-white/50 hover:bg-white/5 hover:text-white'
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -89,7 +88,7 @@ export default function Home() {
               <span>Inbox</span>
             </div>
             {inboxCount > 0 && (
-              <span className={`text-xs px-2 py-0.5 rounded-full ${view === 'inbox' ? 'bg-indigo-500' : 'bg-gray-700'}`}>
+              <span className={`text-xs px-2 py-0.5 rounded-full ${view === 'inbox' ? 'bg-indigo-500' : 'bg-white/10'}`}>
                 {inboxCount}
               </span>
             )}
@@ -100,7 +99,7 @@ export default function Home() {
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               view === 'kanban'
                 ? 'bg-indigo-600 text-white'
-                : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                : 'text-white/50 hover:bg-white/5 hover:text-white'
             }`}
           >
             <div className="flex items-center gap-2.5">
@@ -112,7 +111,7 @@ export default function Home() {
                 <span className="text-xs px-1.5 py-0.5 rounded-full bg-red-500 text-white">{stuckCount}</span>
               )}
               {kanbanCount > 0 && (
-                <span className={`text-xs px-2 py-0.5 rounded-full ${view === 'kanban' ? 'bg-indigo-500' : 'bg-gray-700'}`}>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${view === 'kanban' ? 'bg-indigo-500' : 'bg-white/10'}`}>
                   {kanbanCount}
                 </span>
               )}
@@ -120,13 +119,13 @@ export default function Home() {
           </button>
         </nav>
 
-        <div className="px-5 py-4 border-t border-gray-800">
-          <p className="text-gray-500 text-xs">Powered by Torti 🐢</p>
+        <div className="px-5 py-4 border-t border-white/5">
+          <p className="text-white/20 text-xs">Powered by Torti 🐢</p>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto bg-[#0f0f0f]">
         {view === 'inbox' ? (
           <InboxView
             tasks={tasks}
