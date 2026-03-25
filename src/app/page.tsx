@@ -101,8 +101,8 @@ export default function Home() {
 
   return (
     <div className={`flex h-screen font-sans ${dark ? 'bg-[#0f0f0f]' : 'bg-gray-50'}`}>
-      {/* Sidebar */}
-      <div className={`w-60 border-r flex flex-col flex-shrink-0 ${dark ? 'bg-[#161616] border-white/5' : 'bg-white border-gray-200'}`}>
+      {/* Sidebar — hidden on mobile */}
+      <div className={`hidden md:flex w-60 border-r flex-col flex-shrink-0 ${dark ? 'bg-[#161616] border-white/5' : 'bg-white border-gray-200'}`}>
         {/* Logo */}
         <div className={`px-5 py-5 border-b ${dark ? 'border-white/5' : 'border-gray-100'}`}>
           <div className="flex items-center justify-between">
@@ -166,8 +166,19 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Mobile header */}
+      <div className={`fixed top-0 left-0 right-0 flex md:hidden items-center justify-between px-4 py-3 border-b z-40 ${dark ? 'bg-[#161616] border-white/10' : 'bg-white border-gray-200'}`}>
+        <div className="flex items-center gap-2">
+          <span className="text-lg">🐢</span>
+          <span className={`font-bold text-sm ${dark ? 'text-white' : 'text-gray-800'}`}>Mission Control</span>
+        </div>
+        <button onClick={toggleDark} className="text-lg opacity-50 hover:opacity-100">
+          {dark ? '☀️' : '🌙'}
+        </button>
+      </div>
+
       {/* Main content */}
-      <div className={`flex-1 overflow-auto ${dark ? 'bg-[#0f0f0f]' : 'bg-gray-50'}`}>
+      <div className={`flex-1 overflow-auto pb-16 pt-12 md:pt-0 md:pb-0 ${dark ? 'bg-[#0f0f0f]' : 'bg-gray-50'}`}>
         {view === 'inbox' && <InboxView tasks={tasks} onUpdate={updateTask} onFile={fileTask} onDelete={deleteTask} onAdd={addTask} dark={dark} onOpen={setModalTask} />}
         {view === 'today' && <TodayView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
         {view === 'scheduled' && <ScheduledView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
@@ -175,6 +186,37 @@ export default function Home() {
         {view === 'all' && <AllTasksKanban tasks={tasks} onUpdate={updateTask} dark={dark} onOpen={setModalTask} />}
         {view === 'kanban' && <KanbanBoard tasks={tasks} onUpdate={updateTask} dark={dark} onOpen={setModalTask} />}
         {view === 'done' && <DoneView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
+      </div>
+
+      {/* Bottom nav — mobile only */}
+      <div className={`fixed bottom-0 left-0 right-0 flex md:hidden border-t z-50 ${dark ? 'bg-[#161616] border-white/10' : 'bg-white border-gray-200'}`}>
+        {[
+          { id: 'inbox' as View, icon: '📥', label: 'Inbox', badge: inboxCount },
+          { id: 'today' as View, icon: '🎯', label: 'Today', badge: todayCount },
+          { id: 'scheduled' as View, icon: '📅', label: 'Scheduled', badge: 0 },
+          { id: 'delegated' as View, icon: '👥', label: 'Delegated', badge: 0 },
+          { id: 'kanban' as View, icon: '🐢', label: 'Torti', badge: stuckCount },
+        ].map(({ id, icon, label, badge }) => (
+          <button
+            key={id}
+            onClick={() => setView(id)}
+            className={`flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs transition-colors ${
+              view === id
+                ? 'text-indigo-500'
+                : dark ? 'text-white/40' : 'text-gray-400'
+            }`}
+          >
+            <span className="text-lg leading-none relative">
+              {icon}
+              {badge > 0 && (
+                <span className="absolute -top-1 -right-2 bg-indigo-500 text-white text-[9px] rounded-full w-4 h-4 flex items-center justify-center">
+                  {badge}
+                </span>
+              )}
+            </span>
+            <span>{label}</span>
+          </button>
+        ))}
       </div>
 
       {modalTask && (
