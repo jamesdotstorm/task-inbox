@@ -3,6 +3,14 @@
 import { useState } from 'react';
 import { Task, CATEGORIES, DELEGATES, Importance, Category, Timing, TaskType } from '@/lib/types';
 
+function getNextMonday(): string {
+  const d = new Date();
+  const day = d.getDay();
+  const daysUntilMonday = day === 0 ? 1 : 8 - day;
+  d.setDate(d.getDate() + daysUntilMonday);
+  return d.toISOString().slice(0, 10);
+}
+
 interface Props {
   task: Task;
   onUpdate: (task: Task) => void;
@@ -62,7 +70,7 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete, dark, onOpe
             {/* Timing */}
             <div>
               <label className={`text-xs mb-1 block ${dark ? 'text-white/40' : 'text-gray-500'}`}>Timing</label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {(['do-now', 'schedule'] as Timing[]).map(t => (
                   <button
                     key={t}
@@ -76,6 +84,16 @@ export default function TaskCard({ task, onUpdate, onFile, onDelete, dark, onOpe
                     {t === 'do-now' ? 'Do Now' : 'Schedule'}
                   </button>
                 ))}
+                <button
+                  onClick={() => update({ timing: 'review-next-week', reviewDate: getNextMonday(), filed: true, delegate: task.delegate || 'Jamie' })}
+                  className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
+                    task.timing === 'review-next-week'
+                      ? 'bg-amber-500 text-white border-amber-500'
+                      : dark ? 'bg-transparent text-white/50 border-white/10 hover:border-amber-400 hover:text-amber-300' : 'bg-white text-gray-600 border-gray-200 hover:border-amber-300'
+                  }`}
+                >
+                  Review Next Week
+                </button>
               </div>
               {task.timing === 'schedule' && (
                 <input

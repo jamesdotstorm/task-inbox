@@ -1,4 +1,4 @@
-export type Timing = 'do-now' | 'schedule';
+export type Timing = 'do-now' | 'schedule' | 'review-next-week';
 export type TaskType = 'quick' | 'project';
 export type Importance = 1 | 2 | 3 | 4 | 5;
 export type Category = 'Turnstay' | 'Bunker Hills' | 'Life Admin' | 'Turnstay Admin';
@@ -23,6 +23,7 @@ export interface Task {
   // Attributes
   timing: Timing | null;
   scheduledDate: string | null;
+  reviewDate: string | null;
   taskType: TaskType | null;
   importance: Importance | null;
   category: Category | null;

@@ -13,13 +13,15 @@ import AllTasksKanban from '@/components/AllTasksKanban';
 import TaskModal from '@/components/TaskModal';
 import DoneView from '@/components/DoneView';
 import DailyQuote from '@/components/DailyQuote';
+import ReviewView from '@/components/ReviewView';
 
-type View = 'inbox' | 'today' | 'scheduled' | 'delegated' | 'all' | 'kanban' | 'done';
+type View = 'inbox' | 'today' | 'scheduled' | 'delegated' | 'all' | 'kanban' | 'done' | 'review';
 
 const NAV: { id: View; label: string; icon: string }[] = [
   { id: 'inbox', label: 'Inbox', icon: '📥' },
   { id: 'today', label: "Today's Mission", icon: '🎯' },
   { id: 'scheduled', label: 'Scheduled', icon: '📅' },
+  { id: 'review', label: 'Tasks to Review', icon: '🔁' },
   { id: 'delegated', label: 'Delegated', icon: '👥' },
   { id: 'all', label: 'All Tasks', icon: '📋' },
   { id: 'kanban', label: "Torti's Board", icon: '🐢' },
@@ -41,13 +43,26 @@ export default function Home() {
     // Load from Gist first, fall back to localStorage
     setSyncing(true);
     loadFromSupabase().then(remoteTasks => {
+      let loaded: Task[] = [];
       if (remoteTasks && (remoteTasks as Task[]).length > 0) {
-        const merged = remoteTasks as Task[];
-        setTasks(merged);
-        saveTasks(merged);
+        loaded = remoteTasks as Task[];
+        saveTasks(loaded);
       } else {
-        setTasks(loadTasks());
+        loaded = loadTasks();
       }
+      // Auto-return review tasks whose Monday has arrived
+      const today = new Date().toISOString().slice(0, 10);
+      const needsReturn = loaded.some(t => t.timing === 'review-next-week' && t.reviewDate && t.reviewDate <= today);
+      if (needsReturn) {
+        loaded = loaded.map(t =>
+          t.timing === 'review-next-week' && t.reviewDate && t.reviewDate <= today
+            ? { ...t, timing: null, reviewDate: null, filed: false }
+            : t
+        );
+        saveTasks(loaded);
+        saveToSupabase(loaded);
+      }
+      setTasks(loaded);
       setSyncing(false);
       setMounted(true);
     }).catch(() => {
@@ -96,6 +111,7 @@ export default function Home() {
   const today = new Date().toISOString().slice(0, 10);
   const todayCount = tasks.filter(t => t.filed && (t.timing === 'do-now' || t.scheduledDate === today)).length;
   const doneCount = tasks.filter(t => t.done).length;
+  const reviewCount = tasks.filter(t => t.timing === 'review-next-week' && !t.done).length;
 
   if (!mounted) return null;
 
@@ -129,6 +145,7 @@ export default function Home() {
               : id === 'kanban' ? (stuckCount > 0 ? stuckCount : 0)
               : id === 'today' ? todayCount
               : id === 'done' ? doneCount
+              : id === 'review' ? reviewCount
               : 0;
             const isStuck = id === 'kanban' && stuckCount > 0;
 
@@ -186,6 +203,7 @@ export default function Home() {
         {view === 'all' && <AllTasksKanban tasks={tasks} onUpdate={updateTask} dark={dark} onOpen={setModalTask} />}
         {view === 'kanban' && <KanbanBoard tasks={tasks} onUpdate={updateTask} dark={dark} onOpen={setModalTask} />}
         {view === 'done' && <DoneView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
+        {view === 'review' && <ReviewView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
       </div>
 
       {/* Bottom nav — mobile only */}
