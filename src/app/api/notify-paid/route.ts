@@ -1,55 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.NEXT_PUBLIC_SUPABASE_KEY || ''
-);
+const SEND_URL = process.env.OPENCLAW_SEND_URL || '';
+const GATEWAY_TOKEN = process.env.OPENCLAW_GATEWAY_TOKEN || '';
 
 export async function POST(req: NextRequest) {
   const { taskTitle, senderPhone, senderName } = await req.json();
 
-  const message = `Hi ${senderName || 'there'}! 🐢 Just letting you know that *${taskTitle}* has been paid. Thanks!`;
-
-  // Store as a pending notification task — Torti polls and sends
-  const pendingTask = {
-    id: `notify-${Date.now()}`,
-    title: `[NOTIFY] ${taskTitle}`,
-    notes: JSON.stringify({ type: 'notify-paid', phone: senderPhone, message }),
-    tags: ['_pending_notify'],
-    filed: true,
-    done: false,
-    timing: 'do-now' as const,
-    category: null,
-    delegate: 'Torti',
-    createdAt: new Date().toISOString(),
-    scheduledDate: null,
-    reviewDate: null,
-    taskType: 'quick' as const,
-    importance: 5 as const,
-    subtasks: [],
-    kanbanStatus: 'not-started' as const,
-    isCollaborative: false,
-  };
-
-  const { data, error } = await supabase
-    .from('tasks')
-    .select('data')
-    .eq('id', 'tasks-v1')
-    .single();
-
-  if (error || !data) {
-    return NextResponse.json({ ok: false, error: 'Could not load tasks' }, { status: 500 });
+  if (!senderPhone) {
+    return NextResponse.json({ ok: false, error: 'No sender phone' }, { status: 400 });
   }
 
-  const tasks = data.data as unknown[];
-  tasks.unshift(pendingTask);
-  
-  await supabase.from('tasks').upsert({ 
-    id: 'tasks-v1', 
-    data: tasks,
-    updated_at: new Date().toISOString()
-  });
+  const message = `Hi ${senderName || 'there'}! 🐢 Just letting you know that *${taskTitle}* has been paid. Thanks!`;
 
-  return NextResponse.json({ ok: true, method: 'queued' });
+  try {
+    const res = await fetch(`${SEND_URL}/send`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GATEWAY_TOKEN}`,
+      },
+      body: JSON.stringify({ channel: 'whatsapp', to: senderPhone, message }),
+      signal: AbortSignal.timeout(10000),
+    });
+
+    const result = await res.json();
+    if (!result.ok) {
+      return NextResponse.json({ ok: false, error: result.error }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (e) {
+    return NextResponse.json({ ok: false, error: String(e) }, { status: 500 });
+  }
 }
