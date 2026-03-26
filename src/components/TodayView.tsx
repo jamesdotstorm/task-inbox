@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Task } from '@/lib/types';
 
 interface Props {
@@ -63,13 +64,16 @@ function Section({ title, icon, tasks, dark, empty, onOpen, onUpdate }: { title:
 }
 
 export default function TodayView({ tasks, dark, onOpen, onUpdate }: Props) {
+  const [hideDone, setHideDone] = useState(true);
   const today = new Date().toISOString().slice(0, 10);
   const filed = tasks.filter(t => t.filed);
 
-  const doNow = filed.filter(t => t.timing === 'do-now' && t.taskType === 'quick' && !t.delegate);
-  const projects = filed.filter(t => t.timing === 'do-now' && t.taskType === 'project');
-  const scheduledToday = filed.filter(t => t.timing === 'schedule' && t.scheduledDate === today);
-  const delegatedToday = filed.filter(t => t.delegate && (t.timing === 'do-now' || t.scheduledDate === today));
+  const visible = (list: Task[]) => hideDone ? list.filter(t => !t.done) : list;
+
+  const doNow = visible(filed.filter(t => t.timing === 'do-now' && t.taskType === 'quick' && !t.delegate));
+  const projects = visible(filed.filter(t => t.timing === 'do-now' && t.taskType === 'project'));
+  const scheduledToday = visible(filed.filter(t => t.timing === 'schedule' && t.scheduledDate === today));
+  const delegatedToday = visible(filed.filter(t => t.delegate && (t.timing === 'do-now' || t.scheduledDate === today)));
   const overdue = filed.filter(t => !t.done && t.scheduledDate && t.scheduledDate < today);
 
   const dateStr = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -77,9 +81,21 @@ export default function TodayView({ tasks, dark, onOpen, onUpdate }: Props) {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <div className="mb-6">
-        <h1 className={`text-2xl font-bold ${dark ? 'text-white' : 'text-gray-800'}`}>Today&apos;s Mission</h1>
-        <p className={`text-sm mt-1 ${dark ? 'text-white/40' : 'text-gray-400'}`}>{dateStr}</p>
+      <div className="mb-6 flex items-start justify-between">
+        <div>
+          <h1 className={`text-2xl font-bold ${dark ? 'text-white' : 'text-gray-800'}`}>Today&apos;s Mission</h1>
+          <p className={`text-sm mt-1 ${dark ? 'text-white/40' : 'text-gray-400'}`}>{dateStr}</p>
+        </div>
+        <button
+          onClick={() => setHideDone(h => !h)}
+          className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border transition-colors mt-1 ${
+            hideDone
+              ? dark ? 'border-indigo-500/40 text-indigo-400 bg-indigo-500/10' : 'border-indigo-300 text-indigo-600 bg-indigo-50'
+              : dark ? 'border-white/10 text-white/40 hover:text-white' : 'border-gray-200 text-gray-400 hover:text-gray-700'
+          }`}
+        >
+          {hideDone ? '✓ Hide done' : '○ Show done'}
+        </button>
       </div>
 
       {total === 0 ? (
