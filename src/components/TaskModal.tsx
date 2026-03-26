@@ -1,7 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { Task, CATEGORIES, DELEGATES, Importance, Category, Timing, TaskType } from '@/lib/types';
+import { Task, CATEGORIES, DELEGATES, TAGS, Importance, Category, Timing, TaskType } from '@/lib/types';
+
+function getNextMonday(): string {
+  const d = new Date();
+  const day = d.getDay();
+  const daysUntilMonday = day === 0 ? 1 : 8 - day;
+  d.setDate(d.getDate() + daysUntilMonday);
+  return d.toISOString().slice(0, 10);
+}
 
 interface Props {
   task: Task;
@@ -54,18 +62,18 @@ export default function TaskModal({ task, dark, onUpdate, onClose, onDelete }: P
           {/* Timing */}
           <div>
             <label className={`text-xs font-medium uppercase tracking-wider mb-2 block ${dark ? 'text-white/40' : 'text-gray-500'}`}>Timing</label>
-            <div className="flex gap-2">
-              {(['do-now', 'schedule'] as Timing[]).map(t => (
+            <div className="flex gap-2 flex-wrap">
+              {([['do-now', 'Do Now'], ['schedule', 'Schedule'], ['review-next-week', 'Review Next Week']] as [Timing, string][]).map(([t, label]) => (
                 <button
                   key={t}
-                  onClick={() => update({ timing: t })}
+                  onClick={() => update({ timing: t, reviewDate: t === 'review-next-week' ? getNextMonday() : task.reviewDate })}
                   className={`text-sm px-4 py-2 rounded-lg border transition-all ${
                     task.timing === t
                       ? 'bg-indigo-600 text-white border-indigo-600'
                       : dark ? 'bg-transparent text-white/50 border-white/10 hover:border-indigo-400 hover:text-white' : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300'
                   }`}
                 >
-                  {t === 'do-now' ? 'Do Now' : 'Schedule'}
+                  {label}
                 </button>
               ))}
             </div>
@@ -161,6 +169,29 @@ export default function TaskModal({ task, dark, onUpdate, onClose, onDelete }: P
                   {s === 'not-started' ? 'Not Started' : s === 'working' ? 'Working on It' : s === 'stuck' ? 'Stuck' : 'Finished'}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label className={`text-xs font-medium uppercase tracking-wider mb-2 block ${dark ? 'text-white/40' : 'text-gray-500'}`}>Tags</label>
+            <div className="flex flex-wrap gap-2">
+              {TAGS.map(tag => {
+                const active = (task.tags || []).includes(tag);
+                return (
+                  <button
+                    key={tag}
+                    onClick={() => update({ tags: active ? (task.tags || []).filter(t => t !== tag) : [...(task.tags || []), tag] })}
+                    className={`text-xs px-3 py-1 rounded-full border transition-all ${
+                      active
+                        ? 'bg-indigo-600 text-white border-indigo-600'
+                        : dark ? 'bg-transparent text-white/40 border-white/10 hover:border-indigo-400 hover:text-white' : 'bg-white text-gray-500 border-gray-200 hover:border-indigo-300'
+                    }`}
+                  >
+                    {tag}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
