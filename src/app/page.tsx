@@ -216,7 +216,7 @@ export default function Home() {
         {view === 'review' && <ReviewView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
         {view === 'bills' && <BillsView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
         {view === 'sales' && <SalesReport dark={dark} />}
-        {view === 'alon-jamie' && <AlonJamieChat dark={dark} />}
+        {view === 'alon-jamie' && <AlonJamieChat dark={dark} tasks={tasks} onUpdate={updateTask} onOpen={setModalTask} />}
       </div>
 
       {/* Bottom nav — mobile only */}
