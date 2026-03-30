@@ -17,6 +17,7 @@ import ReviewView from '@/components/ReviewView';
 import BillsView from '@/components/BillsView';
 import SalesReport from '@/components/SalesReport';
 import AlonJamieChat from '@/components/AlonJamieChat';
+import { LogoutButton } from '@/components/PasswordGate';
 
 type View = 'inbox' | 'today' | 'scheduled' | 'delegated' | 'all' | 'kanban' | 'done' | 'review' | 'bills' | 'sales' | 'alon-jamie';
 
@@ -138,9 +139,12 @@ export default function Home() {
                 <p className={`text-xs ${dark ? 'text-white/40' : 'text-gray-400'}`}>Jamie & Torti</p>
               </div>
             </div>
-            <button onClick={toggleDark} className="text-lg opacity-50 hover:opacity-100 transition-opacity" title="Toggle dark mode">
-              {dark ? '☀️' : '🌙'}
-            </button>
+            <div className="flex items-center gap-2">
+              <button onClick={toggleDark} className="text-lg opacity-50 hover:opacity-100 transition-opacity" title="Toggle dark mode">
+                {dark ? '☀️' : '🌙'}
+              </button>
+              <LogoutButton />
+            </div>
           </div>
         </div>
 
