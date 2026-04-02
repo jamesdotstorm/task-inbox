@@ -5,7 +5,7 @@ const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_KEY || '';
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const ROW_ID = 'tasks-v1';
+const ROW_ID = process.env.NEXT_PUBLIC_SUPABASE_ROW_ID || 'tasks-v1';
 
 export async function loadFromSupabase(): Promise<unknown[] | null> {
   try {
