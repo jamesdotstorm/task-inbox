@@ -28,8 +28,9 @@ export default function BillsView({ tasks, dark, onOpen, onUpdate }: Props) {
   const [notifying, setNotifying] = useState<string | null>(null);
   const [notified, setNotified] = useState<Set<string>>(new Set());
 
-  const bills = tasks.filter(t => (t.tags || []).includes('Bill to pay') && !t.done);
-  const paidBills = tasks.filter(t => (t.tags || []).includes('Bill to pay') && t.done);
+  const isBillTag = (tag: string) => tag.toLowerCase().replace(/[-_\s]/g, '').includes('bill');
+  const bills = tasks.filter(t => (t.tags || []).some(isBillTag) && !t.done);
+  const paidBills = tasks.filter(t => (t.tags || []).some(isBillTag) && t.done);
 
   const markPaid = (task: Task) => {
     onUpdate({ ...task, done: true, filed: true, kanbanStatus: 'finished' });
