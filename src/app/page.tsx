@@ -17,9 +17,10 @@ import ReviewView from '@/components/ReviewView';
 import BillsView from '@/components/BillsView';
 import SalesReport from '@/components/SalesReport';
 import AlonJamieChat from '@/components/AlonJamieChat';
+import TarnShoppingList from '@/components/TarnShoppingList';
 import { LogoutButton } from '@/components/PasswordGate';
 
-type View = 'inbox' | 'today' | 'scheduled' | 'delegated' | 'all' | 'kanban' | 'done' | 'review' | 'bills' | 'sales' | 'alon-jamie';
+type View = 'inbox' | 'today' | 'scheduled' | 'delegated' | 'all' | 'kanban' | 'done' | 'review' | 'bills' | 'sales' | 'alon-jamie' | 'tarn-shopping';
 
 const NAV: { id: View; label: string; icon: string }[] = [
   { id: 'inbox', label: 'Inbox', icon: '📥' },
@@ -32,6 +33,7 @@ const NAV: { id: View; label: string; icon: string }[] = [
   { id: 'kanban', label: "Torti's Board", icon: '🐢' },
   { id: 'sales', label: 'Sales Report', icon: '📊' },
   { id: 'alon-jamie', label: 'Alon & Jamie Chat', icon: '💬' },
+  { id: 'tarn-shopping', label: "Tarn's Shopping List", icon: '🛒' },
   { id: 'done', label: 'Done', icon: '✅' },
 ];
 
@@ -122,6 +124,7 @@ export default function Home() {
   const doneCount = tasks.filter(t => t.done).length;
   const reviewCount = tasks.filter(t => t.timing === 'review-next-week' && !t.done).length;
   const billsCount = tasks.filter(t => (t.tags || []).includes('Bill to pay') && !t.done).length;
+  const tarnShoppingCount = tasks.filter(t => (t.tags || []).some(tag => tag.toLowerCase().replace(/[-_\s]/g, '').includes('tarnshoppinglist')) && !t.done).length;
 
   if (!mounted) return null;
 
@@ -160,6 +163,7 @@ export default function Home() {
               : id === 'done' ? doneCount
               : id === 'review' ? reviewCount
               : id === 'bills' ? billsCount
+              : id === 'tarn-shopping' ? tarnShoppingCount
               : 0;
             const isStuck = id === 'kanban' && stuckCount > 0;
 
@@ -221,6 +225,7 @@ export default function Home() {
         {view === 'bills' && <BillsView tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
         {view === 'sales' && <SalesReport dark={dark} />}
         {view === 'alon-jamie' && <AlonJamieChat dark={dark} tasks={tasks} onUpdate={updateTask} onOpen={setModalTask} />}
+        {view === 'tarn-shopping' && <TarnShoppingList tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
       </div>
 
       {/* Bottom nav — mobile only */}
