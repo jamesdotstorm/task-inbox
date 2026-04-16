@@ -16,11 +16,12 @@ import DailyQuote from '@/components/DailyQuote';
 import ReviewView from '@/components/ReviewView';
 import BillsView from '@/components/BillsView';
 import SalesReport from '@/components/SalesReport';
+import CommsView from '@/components/CommsView';
 import AlonJamieChat from '@/components/AlonJamieChat';
 import TarnShoppingList from '@/components/TarnShoppingList';
 import { LogoutButton } from '@/components/PasswordGate';
 
-type View = 'inbox' | 'today' | 'scheduled' | 'delegated' | 'all' | 'kanban' | 'done' | 'review' | 'bills' | 'sales' | 'alon-jamie' | 'tarn-shopping';
+type View = 'inbox' | 'today' | 'scheduled' | 'delegated' | 'all' | 'kanban' | 'done' | 'review' | 'bills' | 'sales' | 'alon-jamie' | 'tarn-shopping' | 'comms';
 
 const NAV: { id: View; label: string; icon: string }[] = [
   { id: 'inbox', label: 'Inbox', icon: '📥' },
@@ -34,6 +35,7 @@ const NAV: { id: View; label: string; icon: string }[] = [
   { id: 'sales', label: 'Sales Report', icon: '📊' },
   { id: 'alon-jamie', label: 'Alon & Jamie Chat', icon: '💬' },
   { id: 'tarn-shopping', label: "Tarn's Shopping List", icon: '🛒' },
+  { id: 'comms', label: 'Comms', icon: '📡' },
   { id: 'done', label: 'Done', icon: '✅' },
 ];
 
@@ -226,6 +228,7 @@ export default function Home() {
         {view === 'sales' && <SalesReport dark={dark} />}
         {view === 'alon-jamie' && <AlonJamieChat dark={dark} tasks={tasks} onUpdate={updateTask} onOpen={setModalTask} />}
         {view === 'tarn-shopping' && <TarnShoppingList tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
+        {view === 'comms' && <CommsView dark={dark} />}
       </div>
 
       {/* Bottom nav — mobile only */}
