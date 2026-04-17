@@ -6,6 +6,7 @@ const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_KEY || '';
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const ROW_ID = process.env.NEXT_PUBLIC_SUPABASE_ROW_ID || 'tasks-v1';
+const FRIENDS_ROW_ID = 'friends-v1';
 
 export async function loadFromSupabase(): Promise<unknown[] | null> {
   try {
@@ -28,5 +29,29 @@ export async function saveToSupabase(tasks: unknown[]): Promise<void> {
       .upsert({ id: ROW_ID, data: tasks, updated_at: new Date().toISOString() });
   } catch (e) {
     console.error('Supabase save failed:', e);
+  }
+}
+
+export async function loadFriendsFromSupabase(): Promise<unknown[] | null> {
+  try {
+    const { data, error } = await supabase
+      .from('tasks')
+      .select('data')
+      .eq('id', FRIENDS_ROW_ID)
+      .single();
+    if (error || !data) return null;
+    return data.data as unknown[];
+  } catch {
+    return null;
+  }
+}
+
+export async function saveFriendsToSupabase(friends: unknown[]): Promise<void> {
+  try {
+    await supabase
+      .from('tasks')
+      .upsert({ id: FRIENDS_ROW_ID, data: friends, updated_at: new Date().toISOString() });
+  } catch (e) {
+    console.error('Supabase friends save failed:', e);
   }
 }

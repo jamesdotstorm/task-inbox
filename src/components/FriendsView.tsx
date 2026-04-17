@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { loadFriendsFromSupabase, saveFriendsToSupabase } from '@/lib/supabase';
 
 type AccessLevel = 'torti' | 'secretary' | 'both';
 type Group = 'Scallywags' | 'Family' | 'Business' | 'Other';
@@ -67,25 +68,50 @@ export default function FriendsView({ dark }: Props) {
   const [editing, setEditing] = useState<Friend | null>(null);
   const [adding, setAdding] = useState(false);
   const [newFriend, setNewFriend] = useState<Omit<Friend, 'id'>>(BLANK_FRIEND);
+  const [syncing, setSyncing] = useState(false);
 
-  // Load from localStorage, seed if empty
+  // Load from Supabase first, fall back to localStorage, seed if empty
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        setFriends(JSON.parse(raw));
+    setSyncing(true);
+    loadFriendsFromSupabase().then(remote => {
+      if (remote && (remote as Friend[]).length > 0) {
+        const data = remote as Friend[];
+        setFriends(data);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       } else {
-        setFriends(SEED_FRIENDS);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_FRIENDS));
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const local = JSON.parse(raw) as Friend[];
+            setFriends(local);
+            // Push local data up to Supabase
+            saveFriendsToSupabase(local);
+          } else {
+            setFriends(SEED_FRIENDS);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_FRIENDS));
+            saveFriendsToSupabase(SEED_FRIENDS);
+          }
+        } catch {
+          setFriends(SEED_FRIENDS);
+          saveFriendsToSupabase(SEED_FRIENDS);
+        }
       }
-    } catch {
-      setFriends(SEED_FRIENDS);
-    }
+      setSyncing(false);
+    }).catch(() => {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        setFriends(raw ? JSON.parse(raw) : SEED_FRIENDS);
+      } catch {
+        setFriends(SEED_FRIENDS);
+      }
+      setSyncing(false);
+    });
   }, []);
 
   const save = (updated: Friend[]) => {
     setFriends(updated);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    saveFriendsToSupabase(updated); // async, fire and forget
   };
 
   const updateFriend = (f: Friend) => save(friends.map(x => x.id === f.id ? f : x));
@@ -129,6 +155,10 @@ export default function FriendsView({ dark }: Props) {
         <div>
           <h1 className={`text-2xl font-bold ${text}`}>👥 Friends & Contacts</h1>
           <p className={`text-sm mt-1 ${sub}`}>Who can reach Torti directly, and who goes through the secretary</p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className={`w-1.5 h-1.5 rounded-full ${syncing ? 'bg-yellow-400 animate-pulse' : 'bg-green-400'}`} />
+            <span className={`text-xs ${sub}`}>{syncing ? 'Syncing...' : 'Synced to cloud'}</span>
+          </div>
         </div>
         <button
           onClick={() => { setAdding(true); setEditing(null); }}
