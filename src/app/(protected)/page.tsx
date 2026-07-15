@@ -18,11 +18,12 @@ import BillsView from '@/components/BillsView';
 import SalesReport from '@/components/SalesReport';
 import CommsView from '@/components/CommsView';
 import FriendsView from '@/components/FriendsView';
+import CronView from '@/components/CronView';
 import AlonJamieChat from '@/components/AlonJamieChat';
 import TarnShoppingList from '@/components/TarnShoppingList';
 import { LogoutButton } from '@/components/PasswordGate';
 
-type View = 'inbox' | 'today' | 'scheduled' | 'delegated' | 'all' | 'kanban' | 'done' | 'review' | 'bills' | 'sales' | 'alon-jamie' | 'tarn-shopping' | 'comms' | 'friends';
+type View = 'inbox' | 'today' | 'scheduled' | 'delegated' | 'all' | 'kanban' | 'done' | 'review' | 'bills' | 'sales' | 'alon-jamie' | 'tarn-shopping' | 'comms' | 'friends' | 'cron';
 
 const NAV: { id: View; label: string; icon: string }[] = [
   { id: 'inbox', label: 'Inbox', icon: '📥' },
@@ -38,6 +39,7 @@ const NAV: { id: View; label: string; icon: string }[] = [
   { id: 'tarn-shopping', label: "Tarn's Shopping List", icon: '🛒' },
   { id: 'comms', label: 'Comms', icon: '📡' },
   { id: 'friends', label: 'Friends', icon: '👥' },
+  { id: 'cron', label: 'Schedules', icon: '⏰' },
   { id: 'done', label: 'Done', icon: '✅' },
 ];
 
@@ -195,6 +197,15 @@ export default function Home() {
               </button>
             );
           })}
+          <a
+            href="/theory"
+            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors mt-2 ${
+              dark ? 'text-white/50 hover:bg-white/5 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+            }`}
+          >
+            <span className="text-base">🌌</span>
+            <span>Theory of Everything</span>
+          </a>
         </nav>
 
         <div className={`px-5 py-4 border-t ${dark ? 'border-white/5' : 'border-gray-100'}`}>
@@ -232,6 +243,7 @@ export default function Home() {
         {view === 'tarn-shopping' && <TarnShoppingList tasks={tasks} dark={dark} onOpen={setModalTask} onUpdate={updateTask} />}
         {view === 'comms' && <CommsView dark={dark} />}
         {view === 'friends' && <FriendsView dark={dark} />}
+        {view === 'cron' && <CronView dark={dark} />}
       </div>
 
       {/* Bottom nav — mobile only */}
