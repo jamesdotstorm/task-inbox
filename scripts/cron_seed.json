@@ -1,14 +1,14 @@
 [
   {
-    "id": "1736880b-fa02-42cf-a3bd-c5ef86a6d6cd",
-    "name": "Everything Everywhere Daily Summary",
-    "summary": "EED podcast latest episode summary",
+    "id": "16623b1b-7896-4a95-94ea-638e230e7312",
+    "name": "🐢 Morning Brief (consolidated)",
+    "summary": "Single daily brief — EED podcast + today's 3 priorities",
     "recipients": ["Jamie"],
     "cronExpr": "30 7 * * *",
     "tz": "Africa/Johannesburg",
     "enabled": true,
-    "lastRunAtMs": 1784093400030,
-    "lastRunStatus": "ok",
+    "lastRunAtMs": null,
+    "lastRunStatus": null,
     "lastRunError": null,
     "nextRunAtMs": 1784179800000,
     "category": "Morning"
@@ -28,19 +28,6 @@
     "category": "Morning"
   },
   {
-    "id": "4ef02253-eda8-420f-9660-6f85ce4eb492",
-    "name": "morning-brief",
-    "summary": "Podcast rec + goals nudge + TurnStay leads email (currently erroring; outreach is paused)",
-    "recipients": ["Jamie (Telegram)"],
-    "cronExpr": "0 5 * * *",
-    "enabled": true,
-    "lastRunAtMs": 1784084400043,
-    "lastRunStatus": "error",
-    "lastRunError": "Telegram delivery target mismatch",
-    "nextRunAtMs": 1784170800000,
-    "category": "Morning"
-  },
-  {
     "id": "8eb17769-c5e5-4dde-a621-80deea224b38",
     "name": "Innermost Loop Daily",
     "summary": "Innermost Loop article (Substack)",
@@ -49,20 +36,6 @@
     "tz": "Africa/Johannesburg",
     "enabled": true,
     "lastRunAtMs": 1784091600037,
-    "lastRunStatus": "ok",
-    "lastRunError": null,
-    "nextRunAtMs": 1784178000000,
-    "category": "Morning"
-  },
-  {
-    "id": "df0f85ac-f281-491f-b0bc-c21169eb0057",
-    "name": "Everything Everywhere Daily Podcast",
-    "summary": "EED podcast (duplicate of the Summary job)",
-    "recipients": ["Jamie"],
-    "cronExpr": "0 7 * * *",
-    "tz": "Africa/Johannesburg",
-    "enabled": true,
-    "lastRunAtMs": 1784091728521,
     "lastRunStatus": "ok",
     "lastRunError": null,
     "nextRunAtMs": 1784178000000,

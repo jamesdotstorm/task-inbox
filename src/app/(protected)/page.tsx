@@ -206,6 +206,15 @@ export default function Home() {
             <span className="text-base">🌌</span>
             <span>Theory of Everything</span>
           </a>
+          <a
+            href="/library"
+            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              dark ? 'text-white/50 hover:bg-white/5 hover:text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'
+            }`}
+          >
+            <span className="text-base">🕯️</span>
+            <span>The Library</span>
+          </a>
         </nav>
 
         <div className={`px-5 py-4 border-t ${dark ? 'border-white/5' : 'border-gray-100'}`}>
