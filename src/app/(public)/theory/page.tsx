@@ -76,7 +76,7 @@ export default function TheoryPage() {
             Jamie Hedley
           </p>
           <h1 className={`text-4xl md:text-5xl lg:text-6xl font-bold ${heading} leading-[1.1] tracking-tight mb-6`}>
-            Theory of Everything
+            Cods Theory of Everything
           </h1>
           <p className={`text-sm ${dark ? 'text-indigo-400/60' : 'text-indigo-500/60'} italic mb-4 font-light`}>
             A theory to underpin a religion to underpin a startup ecosystem

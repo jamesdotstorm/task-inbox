@@ -204,7 +204,7 @@ export default function Home() {
             }`}
           >
             <span className="text-base">🌌</span>
-            <span>Theory of Everything</span>
+            <span>Cods Theory of Everything</span>
           </a>
           <a
             href="/library"
@@ -213,7 +213,7 @@ export default function Home() {
             }`}
           >
             <span className="text-base">🕯️</span>
-            <span>The Library</span>
+            <span>Cod’s Library</span>
           </a>
         </nav>
 
