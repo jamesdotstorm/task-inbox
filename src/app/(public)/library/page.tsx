@@ -193,6 +193,28 @@ const LIBRARY: Resource[] = [
     tags: ['consciousness', 'quantum', 'ivette fuentes', 'new scientist', 'physics', 'mind', 'penrose'],
   },
   {
+    title: 'Update On My Brain Disease',
+    author: 'Bruce Lipton-style creator (personal health documentary)',
+    category: 'Health',
+    kind: 'Video',
+    length: '~15 min',
+    rating: 5,
+    summary:
+      'A behavioural-science creator documents recovering from temporal lobe epilepsy — nine seizures a day, memory failing so badly he sometimes didn’t recognise his wife or newborn daughter — after the standard prescription (whose most common side effect was… seizures) offered no path to repair. Instead he built a mitochondria-first neurology protocol around methylene blue, high-dose melatonin, red-light therapy, beetroot and nature. Nine months in: from nine seizures a day to zero. Not medical advice, but a striking, hopeful case study in mitochondrial and brain health.',
+    notes: [
+      'The setup: diagnosed with temporal lobe epilepsy (possible mesial temporal sclerosis), ~9 seizures/day with amnesia (so he often didn’t know they were happening — people had seen them for ~3 years). Standard drug treated symptoms only; when he asked for anything that could *reverse* the damage or address the underlying cause, he got nothing — and the drug’s most common side effect was seizures.',
+      'Core thesis — mitochondria first: mitochondria are the cell’s power plants (ATP), and “almost every chronic disease from diabetes to neurodegeneration traces back to mitochondrial dysfunction… but mitochondria is also the beginning of health.” Fix the energy system, give the brain a chance to repair.',
+      'Methylene blue: a cheap 1800s fabric dye — the original “magic bullet” — used in medicine since ~1890. Crosses the blood-brain barrier, boosts mitochondrial efficiency, supports neurons, reduces oxidative stress, and works synergistically with red-light therapy (light is absorbed and used by methylene blue). His claim on why it’s obscure: patent long expired, cheap to make, so no one markets it — doctors simply aren’t taught it.',
+      'High-dose melatonin (not the 2 mg sleep pill — doses ~200 mg, taken as a suppository to bypass the liver’s first-pass effect): powerful antioxidant, anti-inflammatory, immune and mood support, and doesn’t suppress your own melatonin production (no crash/rebound). He reports waking up “better than in my 20s.”',
+      'Supporting pieces: red-light therapy, beetroot powder (nitrites → nitric oxide → blood flow + betalain antioxidants), and endonasal/breathing work (a deviated septum limiting left-nostril airflow, tied to parasympathetic/right-brain balance and brain perfusion). He also describes a legal, therapeutic ~4g psilocybin session and feeling neurons “wiring back together.”',
+      'The big-picture line that shook him: “the further a creature is removed from its natural environment, the more it suffers disease” — “we don’t thrive in nature, we *are* nature.” He and his family sold their house and moved for constant exposure to nature. “Distance from descendants is disease.”',
+      'Outcome & framing: 9 months in, nine seizures/day → zero. He’s careful to say it may not last and it’s not medical advice — the goal is to prompt people to research and talk to their doctor. Closing ethos: “there is no benefit to pessimism… choose to live with compassion and relentless curiosity. We rise by lifting others.”',
+      '⚠️ Personal note for Jamie: high-dose methylene blue and high-dose melatonin carry real interactions and risks (e.g. methylene blue + serotonergic drugs → serotonin syndrome). Worth running past Dr Angélique before trying anything — files nicely next to your BP-meds note.',
+    ],
+    link: 'https://www.youtube.com/watch?v=W4tXqcXeHHM',
+    tags: ['brain health', 'mitochondria', 'methylene blue', 'melatonin', 'red light therapy', 'epilepsy', 'longevity', 'neuroscience', 'nature'],
+  },
+  {
     title: 'The Simulation Is About to Break… (Here’s What’s Coming Next)',
     author: 'Tom Campbell',
     category: 'Consciousness',
